@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   BADGES,
@@ -59,7 +61,6 @@ export default function SkillQuestApp() {
 
   const currentProfile = activeProfile ? profiles[activeProfile] : null;
   const currentProgress = currentProfile?.progress?.[selectedTrack] ?? defaultProgress();
-  const currentLevel = getLevelData(selectedTrack, currentProgress.current || 1);
 
   const availableBadges = useMemo(() => {
     if (!currentProfile) return [];
@@ -141,7 +142,7 @@ export default function SkillQuestApp() {
     return nInput === nAnswer || nInput.includes(nAnswer) || nAnswer.includes(nInput);
   };
 
-  const assignBadges = (trackId: TrackId, completedCount: number) => {
+  const assignBadges = (completedCount: number) => {
     const earned = new Set<string>();
     BADGES.forEach((badge) => {
       if (completedCount >= badge.requirement) earned.add(badge.id);
@@ -175,7 +176,7 @@ export default function SkillQuestApp() {
 
     trackProgress.unlocked = Math.min(Math.max(trackProgress.unlocked, current + 1), MAX_LEVELS);
     trackProgress.current = Math.min(current + 1, MAX_LEVELS);
-    trackProgress.badges = assignBadges(trackId, trackProgress.completed.length);
+    trackProgress.badges = assignBadges(trackProgress.completed.length);
 
     currentUser.selectedTrack = trackId;
 
@@ -224,7 +225,6 @@ export default function SkillQuestApp() {
   const progress = currentProfile.progress[selectedTrack];
   const levelNumber = progress.current;
   const level = getLevelData(selectedTrack, levelNumber);
-
   const levelButtons = Array.from({ length: 18 }, (_, i) => i + 1);
 
   return (
